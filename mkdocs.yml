@@ -1,0 +1,7 @@
+site_name: Blog Base Two
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: cyan
