@@ -5,3 +5,14 @@ theme:
   palette:
     scheme: slate
     primary: cyan
+  features:
+    - navigation.tabs
+
+plugins:
+  - mkdocs-jupyter
+  - search
+  # - tags:
+  #     tags_file: tags.md
+
+markdown_extensions:
+  - admonition
