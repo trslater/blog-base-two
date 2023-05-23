@@ -10,7 +10,10 @@ theme:
     - navigation.tabs
 
 plugins:
-  - mkdocs-jupyter
+  - mkdocs-jupyter:
+      remove_tag_config:
+        remove_input_tags:
+          - hide_code
   - search
   # - tags:
   #     tags_file: tags.md
