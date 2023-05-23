@@ -1,4 +1,5 @@
 site_name: Blog Base Two
+repo_url: https://github.com/trslater/blog-base-two
 
 theme:
   name: material
