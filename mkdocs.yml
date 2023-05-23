@@ -8,6 +8,8 @@ theme:
     primary: red
   features:
     - navigation.tabs
+    - navigation.sections
+    - navigation.footer
 
 plugins:
   - mkdocs-jupyter:
