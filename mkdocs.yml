@@ -17,8 +17,6 @@ plugins:
         remove_input_tags:
           - hide_code
   - search
-  # - tags:
-  #     tags_file: tags.md
 
 markdown_extensions:
   - admonition
