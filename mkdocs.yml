@@ -27,3 +27,6 @@ extra:
       link: https://github.com/trslater
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/tristanslater
+  analytics:
+    provider: google
+    property: G-421LLN8ZLH
