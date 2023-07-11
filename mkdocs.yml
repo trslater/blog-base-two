@@ -2,8 +2,8 @@ site_name: Blog Base Two
 repo_url: https://github.com/trslater/blog-base-two
 
 nav:
-  - Posts:
-    - blog/index.md
+  - Home: index.md
+  - Posts: blog/index.md
 
 theme:
   name: material
@@ -12,7 +12,6 @@ theme:
     primary: red
   features:
     - navigation.tabs
-    - navigation.sections
     - navigation.footer
 
 plugins:
