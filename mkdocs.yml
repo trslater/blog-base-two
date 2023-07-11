@@ -16,10 +16,6 @@ theme:
 
 plugins:
   - blog
-  - mkdocs-jupyter:
-      remove_tag_config:
-        remove_input_tags:
-          - hide_code
   - search
 
 markdown_extensions:
