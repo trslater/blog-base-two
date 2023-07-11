@@ -1,6 +1,10 @@
 site_name: Blog Base Two
 repo_url: https://github.com/trslater/blog-base-two
 
+nav:
+  - Posts:
+    - blog/index.md
+
 theme:
   name: material
   palette:
@@ -12,6 +16,7 @@ theme:
     - navigation.footer
 
 plugins:
+  - blog
   - mkdocs-jupyter:
       remove_tag_config:
         remove_input_tags:
