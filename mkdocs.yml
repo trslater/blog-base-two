@@ -11,7 +11,7 @@ theme:
     scheme: slate
     primary: red
   features:
-    - navigation.tabs
+    - navigation.sections
     - navigation.footer
 
 plugins:
