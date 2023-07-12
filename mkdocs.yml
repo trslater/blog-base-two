@@ -1,5 +1,6 @@
 site_name: Blog Base Two
 repo_url: https://github.com/trslater/blog-base-two
+repo_name: trslater/blog-base-two
 
 nav:
   - Home: index.md
