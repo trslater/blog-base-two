@@ -3,7 +3,6 @@ repo_url: https://github.com/trslater/blog-base-two
 repo_name: trslater/blog-base-two
 
 nav:
-  - Home: index.md
   - Posts: blog/index.md
 
 theme:
