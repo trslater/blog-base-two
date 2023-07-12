@@ -4,6 +4,7 @@ repo_name: trslater/blog-base-two
 
 nav:
   - Posts: blog/index.md
+  - Tags: blog/tags.md
 
 theme:
   name: material
@@ -17,6 +18,8 @@ theme:
 plugins:
   - blog
   - search
+  - tags:
+      tags_file: blog/tags.md
 
 markdown_extensions:
   - admonition
