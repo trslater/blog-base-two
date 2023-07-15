@@ -3,7 +3,7 @@ repo_url: https://github.com/trslater/blog-base-two
 repo_name: trslater/blog-base-two
 copyright: >
   &copy; 2023 Tristan Slater
-  | <a href="#__consent">Change cookie settings</a>
+  | <a href="#__consent">Change Cookie Settings</a>
 
 nav:
   - Posts: index.md
