@@ -1,5 +1,6 @@
 site_name: Blog Base Two
-repo_url: https://github.com/trslater/blog-base-two
+site_url: https://trslater.ca/blog-base-two/
+repo_url: https://github.com/trslater/blog-base-two/
 repo_name: trslater/blog-base-two
 copyright: >
   &copy; 2023 Tristan Slater
@@ -11,6 +12,7 @@ nav:
 
 theme:
   name: material
+  custom_dir: overrides
   palette:
     scheme: slate
     primary: red
@@ -31,6 +33,9 @@ markdown_extensions:
   - admonition
   - pymdownx.arithmatex:
       generic: true
+
+hooks:
+  - hooks.py
 
 extra:
   analytics:
