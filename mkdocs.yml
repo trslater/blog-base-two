@@ -46,6 +46,9 @@ extra:
     description: >
       This site uses cookies to track traffic via Google Analytics
       as for GitHub integration.
+  social:
+    - icon: material/rss
+      link: feed/
 
 extra_javascript:
   - https://polyfill.io/v3/polyfill.min.js?features=es6
