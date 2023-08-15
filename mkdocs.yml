@@ -13,10 +13,6 @@ nav:
 theme:
   name: material
   custom_dir: overrides
-  palette:
-    scheme: slate
-    primary: red
-    accent: teal
   features:
     - navigation.sections
     - navigation.top
