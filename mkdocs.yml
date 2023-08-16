@@ -22,12 +22,16 @@ theme:
 plugins:
   - blog:
       blog_dir: .
+  - glightbox:
+      effect: none
   - search
   - tags:
       tags_file: tags.md
 
 markdown_extensions:
   - admonition
+  - attr_list
+  - md_in_html
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.details
