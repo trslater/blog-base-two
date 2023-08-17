@@ -13,6 +13,8 @@ nav:
 
 theme:
   name: material
+  palette:
+    primary: black
   custom_dir: overrides
   features:
     - content.code.copy
