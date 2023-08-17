@@ -9,6 +9,7 @@ copyright: >
 nav:
   - Posts: index.md
   - Tags: tags.md
+  - About: about.md
 
 theme:
   name: material
