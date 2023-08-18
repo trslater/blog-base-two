@@ -17,7 +17,7 @@ tags:
 <figure markdown>
   ![An image rendered using path tracing, demonstrating notable features of the technique](../assets/images/moller-trumbore/path-tracing-example.jpg)
   
-  <figcaption>"<a href="https://commons.wikimedia.org/wiki/File:Path_tracing_001.png">Path tracing 001.png</a>" by Qutorial is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a> via <a href="https://commons.wikimedia.org/wiki/Main_Page">Wikimedia Commons</a></figcaption>
+  <figcaption>"<a href="https://commons.wikimedia.org/wiki/File:Path_tracing_001.png">Path tracing 001.png</a>" by Qutorial is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></figcaption>
 </figure>
 
 Have you ever wondered how computers produce photorealistic lighting: shading, shadows, reflections, depth of field, etc.? Most commonly, this is done via **ray tracing** or one of its descendants (e.g., path tracing or photon mapping). The basic idea is to mimic the way rays of light travel around a scene and what colour the ray is when it reaches the eye/camera. There are many ways light rays interact within a scene, but they almost all require knowing *where a ray hits an object*. From this point it can bounce off, refract through, or be used to simulate the effect of many rays spraying out in all directions. This article will focus ray collisions with the most general of objects: the humble triangle. We will start with an intuitive understanding of the problem and work our way up to an elegant and efficient solution known as the **Möller–Trumbore** algorithm.
@@ -92,6 +92,12 @@ This equation reads, if we start at position $A$ and travel in direction $\mathb
 
 Before we get started, a question might be popping out at you: why does a triangle represent a the most general case of an object in a 3D scene? Without getting into too much detail, any 3D surface can be approximated arbitrarily well using a mesh of triangles. Why not rectangles, pentagons, etc.? That is out of the scope of this article, but it has been found to greatly simplify storage and calculations of meshes. What is important for this article is that the vast majority of 3D objects are modelled as meshes of triangles. Therefore, knowing where a ray hits a single triangle is the same as knowing where a ray hits any arbitrary 3D surface—at least to a good approximation. To collect the data of ray collisions across any number of objects and rays is as simple as—glossing over some technicalities of course—iterating over the triangles in a scene for each ray.
 
+<figure markdown>
+  ![An image rendered using path tracing, demonstrating notable features of the technique](../assets/images/moller-trumbore/dolphin-triangle-mesh.png){ width=300, style="display: block; margin: 0 auto;" }
+  
+  <figcaption>"<a href="https://en.wikipedia.org/wiki/File:Dolphin_triangle_mesh.png">Dolphin triangle mesh.png</a>" by <a href="https://en.wikipedia.org/wiki/User:Chrschn">Chrschn</a> is licensed under public domain</figcaption>
+</figure>
+
 ## 2D Möller–Trumbore
 
 With all of the preamble out of the way, it is time to start tackling our problem. However, as is usually the case with any new math problem, solving a simpler version of problem first is usually helpful in finding the final solution. When it comes to 3D graphics problems, this often means solving its 2D analog. 2D environments are simpler, easier to understand, and require a lot less algebra and computing power when modelling with code. Perhaps most importantly though, visual representations are almost always easier to parse. It may seem like extra work, but it often turns out to be less work to start in 2D and translate the solution to 3D than to start in 3D.
@@ -102,7 +108,13 @@ At first, it might be tempting to think we can just shoot a 2D ray at a triangle
 
 If we back up to why we are using triangles in the first place, this makes a lot of sense. As mentioned previously, we can think of our mesh of triangles as approximating some smooth 3D surface. This discretized the problem into finite objects that are easier to understand and work with. In 2D, we want an equivalent discretization of a smooth 2D surface (i.e. a curve) into finite simpler to understand 2D shapes. How can we approximate a curve with a finite set of simpler 2D shapes? We can use a set of mesh of line segments.
 
-### The Problem
+<figure markdown>
+  ![An image rendered using path tracing, demonstrating notable features of the technique](https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Approximate_arc_length.svg/360px-Approximate_arc_length.svg.png){ width=300, style="display: block; margin: 0 auto;" }
+  
+  <figcaption>"<a href="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Approximate_arc_length.svg/360px-Approximate_arc_length.svg.png">Approximate arc length.svg</a>" by PlatypeanArchcow is licensed under <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0 1.0</a> via <a href="https://commons.wikimedia.org/wiki/Main_Page">Wikimedia Commons</a></figcaption>
+</figure>
+
+### Defining the Problem
 
 Finally, we're ready to start tackling the 2D analog of the problem. From a high level our problem is simple: *given a ray and a line segment, where does the ray hit a triangle?* But before we can solve this, we need to define things more clearly:
 
@@ -113,7 +125,7 @@ Finally, we're ready to start tackling the 2D analog of the problem. From a high
 -   Can a ray hit the same line segment more than once?
 -   How do we know if it misses?
 
-### What is a Ray?
+#### What is a Ray?
 
 A **ray** is simply *a portion of a line that is bounded at one end*. There could be many ways to model a ray mathematically, but to arrive at a model applicable to our problem, we need to consider what it is we know and what it is we are looking for. Generally, we will know where the ray originates—we call this the ray **origin**, denoted by $E$ for eye (in traditional ray tracing rays originate at the eye/camera instead of the light source for reasons outside the scope of this post)—and we will also know where the ray is pointing, i.e., the **direction** $\mathbf{\hat{d}}$. We want an expression for an arbitrary point $R$ on the ray, since our problem is to find the *point* at which the ray hits the line segment. To get to any point on the ray, we just have to start at $E$ and travel in the direction $\mathbf{\hat{d}}$ for some distance $t$. This has the side effect that every point on our ray is wholly determined by our choice of $t$. We can combine this information with our relationships from [Discriminating Between Points & Vectors](#discriminating-between-points--vectors) to derive a function for any point on the ray in terms of distance from the ray origin:
 
@@ -121,9 +133,11 @@ $$R(t) = E + t\mathbf{\hat{d}}, \quad t \geq 0$$
 
 We can summarize this equation succinctly: $R$ is the point $t$ units from $E$ in the direction $\mathbf{\hat{d}}$. Does this sound familiar? It should. We've already seen almost this exact same equation before, just with different symbols. The key difference here is that $t$ has been restricted so that all of the points of the ray lie to one side of $E$. We didn't need to state this earlier, because we were explicitly referring to the vector *magnitude*, which is always non-negative. However, in this case, we have an arbitrary scalar, so we need to explicitly define its range.
 
+<iframe src="https://www.desmos.com/calculator/ye41347jsh?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
+
 One final note about our ray definition: it is possible to use non-unit direction vectors, but this has the problem that there are an infinite number of point–vector pairs that define the same ray. Whereas, every point–unit vector pair *uniquely* defines a ray. Additionally, using unit direction vectors normalizes $t$ to always represent a unit distance, no matter the ray. This information can be handy in other contexts. In general, sticking to unit direction vectors for rays simplifies conceptualization and calculation, not just with regards to MT.
 
-### What is a Line Segment?
+#### What is a Line Segment?
 
 I think most people are familiar with what a line segment is, but I want to draw a particular definition: *a line segment is a portion of a line bounded at both ends*. Notice how this mirrors our ray definition. Also like with the ray, we're after a particular model of a line segment amenable to our problem. Starting with what we know, a line segment $AB$ is usually defined by its two end points, $A$ and $B$. We want to be able to find an arbitrary point $S$, somewhere on the straight-line path between them. Luckily, there is a very well-established way to find an arbitrary point between two other points: **linear interpolation**. We can use it to form a function for an arbitrary point $S$, $u$ percent of the way from $A$ to $B$, in terms of $u$:
 
@@ -145,11 +159,13 @@ $$S(u) = (1 - u)A + uB, \quad 0 \leq u \leq 1$$
 
     This is pretty neat, so I thought I'd include it, but it's not as practical as our other approach.
 
+<iframe src="https://www.desmos.com/calculator/kc6dwx7pan?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
+
 As much as I'd love to go into the intuition behind linear interpolation, I can't explain everything, so we'll just take on faith that it works.
 
 As with the ray, it is pretty interesting (and convenient) that the points on the line segment are wholly determined by our choice of $u$. This fact will become important later.
 
-### What Does it Mean for a Ray to Hit Something?
+#### What Does it Mean for a Ray to Hit Something?
 
 The key to understanding where a ray hits a line segment (or any object for that matter) is to realize that this point *has* to be both a point on the ray and a point on the line segment. In other words, the points must be equal:
 
@@ -159,7 +175,7 @@ This means that we simply need to find the choice of $t$ and $u$ that make the a
 
 Recall that both a ray and a segment are portions of a line. As such, each sits on a particular line. Unless these lines are parallel, they cross over each other *exactly once* at a single point. Since our ray and line segment represent only a subset of the points of each line, we can conclude that all of the points at which they intersect must be a subset of the points at which the lines intersect. That is, *at most* one.
 
-### How Do We Know If a Ray Misses a Line Segment?
+#### How Do We Know If a Ray Misses a Line Segment?
 
 The previous section already all but spelled out our first miss condition: *if the ray and line segment are parallel*.
 
@@ -170,7 +186,11 @@ Also stated previously, if they aren't parallel, the lines on which they lie on 
 
 Note: these two conditions can happen simultaneously, but usually, you'll check one first—probably $t$—and exit early if a miss is detected.
 
-### A Refined Problem Statement
+Try moving the points and direction around and see if you can produce the three miss conditions we've mentioned:
+
+<iframe src="https://www.desmos.com/calculator/cbk4iqtnrk?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
+
+#### A Refined Problem Statement
 
 With all of that out of the way, we can refine our problem to get to what we really want: given a ray defined by a point $E$ and a direction $\mathbf{\hat{d}}$, and a line segment $AB$ defined by points $A$ and $B$, is there a choice of parameters $t$ and $u$ within their respective domains, such that $R(t) = S(u)$.
 
@@ -191,6 +211,13 @@ $$E - A = t(-\mathbf{\hat{d}}) + u(B - A)$$
     I've brought the negative sign inside parentheses with the ray direction. This is to emphasize that the distance is non-negative and that this term is pointing in the opposite direction as the ray.
 
 Let's stop to think about what this equation means. We can think of each side of the equation representing a different path. By setting these paths equal, we're not saying they travel the same distance, but that they have the same *displacement*. In other words, if a traveler starts down either path from the same location, they will arrive at the same destination. Notice that the LHS explicitly tells us that if we start at $A$, we'll arrive at $E$. That means that if the path defined by the RHS starts at $A$, it too will arrive at $E$. This makes conceptual sense. Imagine we already have the exact $t$ and $u$ of our solution. If we start at $A$ and travel $u$ percent of the way to $B$, we'll be at the intersection point. If we then travel *from* the intersection point $t$ units in the *opposite* direction as the ray, we'll arrive back at $E$, the ray origin.
+
+Try dragging the slider to the right to help visualize traversing these paths:
+
+<iframe src="https://www.desmos.com/calculator/n7jmqtboel?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
+
+!!! note
+    I've removed the axes to emphasize that we are just interested in the vectors. The points are included just to show how these vectors relate to the problem.
 
 Now the question becomes, how do we solve for $t$ and $u$? Decomposing the vectors into their components reveals that what we are really dealing with a system of equations:
 
@@ -247,6 +274,13 @@ $$\begin{bmatrix}
     u
 \end{bmatrix} = \mathbf{M}^{-1}(E - A)$$
 
+You can visualize this transformation in either direction by dragging the slider back and forth:
+
+<iframe src="https://www.desmos.com/calculator/p2c4zrtccu?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
+
+!!! note
+    I've drawn only a few grid lines to improve performance. I've also played kind of fast and loose with the labelling, but this is meant to just give a sense for what is happening rather than a rigorous representation.
+
 We're not going to worry about the mechanics of finding a matrix inverse. There is a plethora of resources on the various methods online. However, it is important to note that an inverse isn't guaranteed. There some conditions (most of which turn out to be equivalent) that have to be met for an inverse to exist. One of the conditions is that the matrix is square. This is a huge topic and we aren't going to go into it here, but it is related to why the 2D analog to a triangle is a segment. We are working in 2D, so the matrix has two rows. Thus, we need two columns, i.e., two basis vectors. Our basis vectors are defined by our ray, and the object it intersects (this will come back later in the 3D version). For this condition to be met, the problem needs to be set up correctly from the beginning, so doesn't actually have much to do with solving the problem.
 
 Another condition for invertibility is that the column vectors be linearly independent. For only two vectors, this is the same as saying they are *not* parallel. Recall this was one of our miss conditions. This gives us our first way to check for a miss: *if we can't find an inverse, the ray misses*.
@@ -264,6 +298,10 @@ That's it! We've solve the 2D ray–line segment intersection problem. To summar
     -   If $u < 0$, exit with a miss
     -   If $u > 1$, exit with a miss
 4.  Return $t$ and $u$
+
+Finally, a visualization of what the solution looks like:
+
+<iframe src="https://www.desmos.com/calculator/bsioqovkq0?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
 
 ## Translating Back to 3D
 
@@ -283,6 +321,8 @@ In this sense, the natural extension of a line segment to 3D would be a hyperpla
 $$P(u, v) = A + u(B - A) + v(C - A), \quad 0 \leq u, v \leq 1$$
 
 What is this shape? Let's start following a path around the outside and see if we can figure it out. $P(0, 0) = A$. This will be our starting point. As we increase $u$ from 0 to 1, we travel along the path $B - A$ towards $B$. $P(1, 0) = B$. From here, as we increase $v$ from 0 to 1, we travel along the path $C - A$ toward a new point. Let's call it $D$. Now, we start decreasing $u$ again. This causes us to move toward $C$ along the path $A - B$. Recall, this is just the opposite direction as $B - A$, so is parallel. We arrive at $C$, and if we complete the trip by decreasing $v$ back to 0, we'll travel along $A - C$ (parallel to $C - A$) until we arrive back at $A$. So, we have a shape with four points and four sides where opposite sides are parallel. It's a **parallelogram**!
+
+<iframe src="https://www.desmos.com/calculator/szi2ytwaai?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
 
 ## Parallelogram Möller–Trumbore
 
@@ -333,6 +373,22 @@ Conceptually, everything works very much the same:
 -   If the ray is pointing away from the parallelogram it misses. This corresponds to $t$ being negative.
 -   If the ray is pointing towards the plane of the parallelogram, but $u$ or $v$ are out of ranges, the ray has missed, but now there are four edges it can pass by instead of two ends.
 
+<script src="https://www.geogebra.org/apps/deployggb.js"></script>
+<div id="ggb-element" style="width: 100%; height: 300px"></div>
+<script>
+    var params = {
+        "appName": "3D", 
+        "material_id": "ma3taknq",
+        "autoHeight": true,
+        "transparentGraphics": true,
+        "borderColor": "#FF000000",
+    }
+    var ggbApplet = new GGBApplet(params, true)
+    window.addEventListener("load", function() { 
+        ggbApplet.inject('ggb-element')
+    })
+</script>
+
 ## Extending to Triangles
 
 Extending to triangles is very simple, but requires some explanation. Imagine we create a new function $\tilde{T}$ based on our parallelogram, but with $u$ fixed at $1 - v$:
@@ -340,6 +396,8 @@ Extending to triangles is very simple, but requires some explanation. Imagine we
 $$\tilde{T}(v) = A + (1 - v)(B - A) + v(C - A), \quad 0 \leq v \leq 1$$
 
 Notice this looks a lot like linear interpolation. Imagine starting $\tilde{T}(0) = B$. As we increase $v$ from 0 to 1, our $B - A$ vector is scaled down by the same amount $C - A$ is scaled up, so $\tilde{T}$ travels from $B$ to $C$ in a straight line. This line creates a triangle with $AB$ and $AC$. Now, we just need to incorporate the interior points.
+
+<iframe src="https://www.desmos.com/calculator/uizbpjechl?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
 
 Let's reintroduce $u$, but keep its relationship to $v$ in the form of a constraint:
 
@@ -350,6 +408,10 @@ As long as our $u + v = 1$ condition holds, all points of $\tilde{T}$ will be al
 $$T(u, v) = A + u(B - A) + v(C - A), \quad 0 \leq u, v \leq 1, u + v \leq 1$$
 
 And we have a formula for any point on or inside a triangle that mirrors our parallelogram. In fact, it only differs by a single constraint.
+
+Try moving the point around and see what happens and when certain conditions fail. See if you can notice an interesting pattern:
+
+<iframe src="https://www.desmos.com/calculator/mjyebwcbtj?embed" width="500" height="500" style="border: 1px solid #ccc" frameborder=0></iframe>
 
 !!! note
     More commonly, we define $w = 1 - u - v$, and check $w \geq 0$. Why? $u$, $v$, and $w$ define what are called barycentric coordinates. $u$, $v$, and $w$, tell us how close we are to $B$, $C$, and $A$, respectively. I'd like to make a whole post on barycentric coordinates at some point.
@@ -368,6 +430,22 @@ This was a long, meandering approach to learning this algorithm, so I'd like to 
     -   $v > 1$
     -   $u + v > 1$
 4.  Return $t$ and $u$
+
+<script src="https://www.geogebra.org/apps/deployggb.js"></script>
+<div id="ggb-element" style="width: 100%; height: 300px"></div>
+<script>
+    var params = {
+        "appName": "3D", 
+        "material_id": "cu6u5zwn",
+        "autoHeight": true,
+        "transparentGraphics": true,
+        "borderColor": "#FF000000",
+    }
+    var ggbApplet = new GGBApplet(params, true)
+    window.addEventListener("load", function() { 
+        ggbApplet.inject('ggb-element')
+    })
+</script>
 
 ## A Basic Python Implementation
 
