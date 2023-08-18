@@ -1,5 +1,4 @@
 ---
-draft: true 
 date: 2023-08-15
 authors:
   - trslater
