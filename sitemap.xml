@@ -26,7 +26,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://trslater.ca/blog-base-two/2023/08/15/mollertrumbore-photorealistic-lighting-starts-with-a-ray-and-a-triangle/</loc>
+         <lastmod>2023-08-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://trslater.ca/blog-base-two/archive/2023/</loc>
+         <lastmod>2023-08-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://trslater.ca/blog-base-two/category/explainers/</loc>
          <lastmod>2023-08-18</lastmod>
          <changefreq>daily</changefreq>
     </url>

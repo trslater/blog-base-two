@@ -14,7 +14,7 @@
         <link rel="prev" href="../../about/">
       
       
-        <link rel="next" href="../../category/updates/">
+        <link rel="next" href="../../category/explainers/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -414,6 +414,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../../category/explainers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Explainers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../category/updates/" class="md-nav__link">
         
   
@@ -467,6 +487,55 @@
       <header class="md-typeset">
         <h1 id="2023">2023</h1>
       </header>
+      
+        <article class="md-post md-post--excerpt">
+  <header class="md-post__header">
+    
+      <nav class="md-post__authors md-typeset">
+        
+          <span class="md-author">
+            <img src="https://avatars.githubusercontent.com/u/1631008?v=4" alt="Tristan Slater">
+          </span>
+        
+      </nav>
+    
+    <div class="md-post__meta md-meta">
+      <ul class="md-meta__list">
+        <li class="md-meta__item">
+          <time datetime="2023-08-15 00:00:00">August 15, 2023</time></li>
+        
+          <li class="md-meta__item">
+            in
+            
+              <a href="../../category/explainers/" class="md-meta__link">Explainers</a></li>
+        
+        
+          
+          <li class="md-meta__item">
+            
+              25 min read
+            
+          </li>
+        
+      </ul>
+      
+    </div>
+  </header>
+  <div class="md-post__content md-typeset">
+    <h2 id="mollertrumbore-photorealistic-lighting-starts-with-a-ray-and-a-triangle"><a class="toclink" href="../../2023/08/15/mollertrumbore-photorealistic-lighting-starts-with-a-ray-and-a-triangle/">Möller–Trumbore: Photorealistic Lighting Starts With a Ray and a Triangle</a></h2>
+<figure>
+<p><img alt="An image rendered using path tracing, demonstrating notable features of the technique" src="../../assets/images/moller-trumbore/path-tracing-example.jpg" /></p>
+<figcaption>"<a href="https://commons.wikimedia.org/wiki/File:Path_tracing_001.png">Path tracing 001.png</a>" by Qutorial is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></figcaption>
+</figure>
+<p>Have you ever wondered how computers produce photorealistic lighting: shading, shadows, reflections, depth of field, etc.? Most commonly, this is done via <strong>ray tracing</strong> or one of its descendants (e.g., path tracing or photon mapping). The basic idea is to mimic the way rays of light travel around a scene and what colour the ray is when it reaches the eye/camera. There are many ways light rays interact within a scene, but they almost all require knowing <em>where a ray hits an object</em>. From this point it can bounce off, refract through, or be used to simulate the effect of many rays spraying out in all directions. This article will focus ray collisions with the most general of objects: the humble triangle. We will start with an intuitive understanding of the problem and work our way up to an elegant and efficient solution known as the <strong>Möller–Trumbore</strong> algorithm.</p>
+
+    <nav class="md-post__action">
+      <a href="../../2023/08/15/mollertrumbore-photorealistic-lighting-starts-with-a-ray-and-a-triangle/">
+        Continue reading
+      </a>
+    </nav>
+  </div>
+</article>
       
         <article class="md-post md-post--excerpt">
   <header class="md-post__header">
@@ -551,13 +620,13 @@
         
         
           
-          <a href="../../category/updates/" class="md-footer__link md-footer__link--next" aria-label="Next: Updates" rel="next">
+          <a href="../../category/explainers/" class="md-footer__link md-footer__link--next" aria-label="Next: Explainers" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Updates
+                Explainers
               </div>
             </div>
             <div class="md-footer__button md-icon">
