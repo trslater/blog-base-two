@@ -373,7 +373,7 @@ Conceptually, everything works very much the same:
 -   If the ray is pointing towards the plane of the parallelogram, but $u$ or $v$ are out of ranges, the ray has missed, but now there are four edges it can pass by instead of two ends.
 
 <script src="https://www.geogebra.org/apps/deployggb.js"></script>
-<div id="ggb-element" style="width: 100%; height: 300px"></div>
+<div id="ggb-para-mt" style="width: 100%; height: 300px"></div>
 <script>
     var params = {
         "appName": "3D", 
@@ -382,9 +382,9 @@ Conceptually, everything works very much the same:
         "transparentGraphics": true,
         "borderColor": "#FF000000",
     }
-    var ggbApplet = new GGBApplet(params, true)
+    var ggbParaMTApplet = new GGBApplet(params, true)
     window.addEventListener("load", function() { 
-        ggbApplet.inject('ggb-element')
+        ggbParaMTApplet.inject('ggb-para-mt')
     })
 </script>
 
@@ -431,7 +431,7 @@ This was a long, meandering approach to learning this algorithm, so I'd like to 
 4.  Return $t$ and $u$
 
 <script src="https://www.geogebra.org/apps/deployggb.js"></script>
-<div id="ggb-element" style="width: 100%; height: 300px"></div>
+<div id="ggb-tri-mt" style="width: 100%; height: 300px"></div>
 <script>
     var params = {
         "appName": "3D", 
@@ -440,9 +440,9 @@ This was a long, meandering approach to learning this algorithm, so I'd like to 
         "transparentGraphics": true,
         "borderColor": "#FF000000",
     }
-    var ggbApplet = new GGBApplet(params, true)
+    var ggbTriMTApplet = new GGBApplet(params, true)
     window.addEventListener("load", function() { 
-        ggbApplet.inject('ggb-element')
+        ggbTriMTApplet.inject('ggb-tri-mt')
     })
 </script>
 
