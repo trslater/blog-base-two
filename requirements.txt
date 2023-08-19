@@ -2,6 +2,7 @@ itikz==0.1.5
 jupyter==1.0.0
 matplotlib==3.7.1
 mkdocs==1.5.2
+mkdocs-glightbox==0.3.4
 mkdocs-jupyter==0.23.0
 mkdocs-material==9.2.0b0
 networkx==3.1
